@@ -14,40 +14,11 @@ import json
 import sys
 import requests
 import os
+from presidio_service import analyze_text, anonymize_text, default_anonymizers
 
 # Endpoints for your running Presidio Docker containers
 ANALYZER_URL   = 'http://localhost:5002/analyze'
 ANONYMIZER_URL = 'http://localhost:5001/anonymize'
-
-def analyze_text(text: str, language: str = 'en', score_threshold: float = 0.5):
-    """Call Presidio Analyzer and return the list of detections."""
-    payload = {
-        "text": text,
-        "language": language,
-        "score_threshold": score_threshold
-    }
-    resp = requests.post(ANALYZER_URL, json=payload)
-    resp.raise_for_status()
-    return resp.json()
-
-def anonymize_text(text: str, analyzer_results: list, anonymizers: dict = None):
-    """
-    Call Presidio Anonymizer.
-    - text: original text
-    - analyzer_results: list of dicts with start/end/entity_type/score
-    - anonymizers: dict mapping entity_type or 'DEFAULT' to operator configs
-    """
-    if anonymizers is None:
-        # default: replace each entity with "<ENTITY_TYPE>"
-        anonymizers = {"DEFAULT": {"type": "replace", "new_value": "<ENTITY>"}}
-    payload = {
-        "text": text,
-        "analyzer_results": analyzer_results,
-        "anonymizers": anonymizers
-    }
-    resp = requests.post(ANONYMIZER_URL, json=payload)
-    resp.raise_for_status()
-    return resp.json()
 
 def load_text_from_file(path: str) -> str:
     with open(path, 'r', encoding='utf-8') as f:
@@ -63,11 +34,7 @@ def main():
     parser.add_argument('--quiet', action='store_true', help="Suppress info messages; only output errors and anonymized text")
     args = parser.parse_args()
 
-    anonymizers = {
-        "DEFAULT":      { "type": "replace", "new_value": "ANONYMIZED" },
-        "PHONE_NUMBER": { "type": "mask",    "masking_char": "*", "chars_to_mask": 4, "from_end": True },
-        "EMAIL_ADDRESS": { "type": "redact" }
-    }
+    anonymizers = default_anonymizers
 
     # Build list of files to process
     files_to_process = []

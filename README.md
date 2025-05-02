@@ -1,6 +1,6 @@
 # Presidio Anonymiser
 
-A command-line tool that reads text from a file, analyzes it for PII entities using [Microsoft Presidio Analyzer](https://microsoft.github.io/presidio/) (via Docker), and then anonymizes those entities using Presidio Anonymizer.
+A command-line tool (and optional API service) that reads text from a file, analyzes it for PII entities using [Microsoft Presidio Analyzer](https://microsoft.github.io/presidio/) (via Docker), and then anonymizes those entities using Presidio Anonymizer.
 
 Repository URL
 https://github.com/ohnotnow/presidio-anonymiser
@@ -14,6 +14,7 @@ https://github.com/ohnotnow/presidio-anonymiser
 - [Options & Flags](#options--flags)
 - [Example](#example)
 - [License](#license)
+- [API Service (FastAPI)](#api-service-fastapi)
 
 ## Features
 - Detects PII entities (names, phone numbers, email addresses, etc.)
@@ -135,6 +136,55 @@ Output:
 === Anonymized Text ===
 Hello ANONYMIZED, your phone number ****** is now protected. Please contact ANONYMIZED for details.
 ========================
+```
+
+## API Service (FastAPI)
+
+You can run a web service for programmatic access using FastAPI. The service exposes a single endpoint:
+
+### POST /anonymize
+
+**Request JSON:**
+```json
+{
+  "contents": "Text to analyze and anonymize",  // required
+  "filename": "optional-filename.txt",          // optional
+  "lang": "en",                                // optional, default 'en'
+  "threshold": 0.5                              // optional, default 0.5
+}
+```
+
+**Response JSON:**
+```json
+{
+  "filename": "optional-filename.txt",
+  "entities": [
+    {"start": 10, "end": 25, "entity_type": "EMAIL_ADDRESS", "score": 0.95},
+    {"start": 45, "end": 55, "entity_type": "PHONE_NUMBER", "score": 0.88}
+  ],
+  "anonymized_text": "...the anonymized result..."
+}
+```
+
+### Running the API
+
+First, ensure the Presidio Analyzer and Anonymizer Docker containers are running (see above).
+
+Then, install dependencies and start the API server:
+
+```bash
+uv sync
+uvicorn api:app --reload
+```
+
+The service will be available at http://localhost:8000. You can access the interactive docs at http://localhost:8000/docs
+
+### Example curl request
+
+```bash
+curl -X POST "http://localhost:8000/anonymize" \
+     -H "Content-Type: application/json" \
+     -d '{"contents": "Contact me at john@example.com or 555-1234."}'
 ```
 
 ## License
