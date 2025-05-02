@@ -193,7 +193,7 @@ curl -X POST "http://localhost:8000/anonymize" \
 You can start the API and all required Presidio services using Docker Compose:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This will start three services:
@@ -205,7 +205,7 @@ You can then access the API at [http://localhost:8000](http://localhost:8000) an
 
 To stop and remove the containers:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## License
