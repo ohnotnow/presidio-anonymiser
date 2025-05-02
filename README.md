@@ -182,11 +182,16 @@ The service will be available at http://localhost:8000. You can access the inter
 
 ### Example curl request
 
+You can use `jq` to safely build a JSON payload, which helps avoid issues with escaping quotes and special characters in your text:
+
 ```bash
-curl -X POST "http://localhost:8000/anonymize" \
-     -H "Content-Type: application/json" \
-     -d '{"contents": "Contact me at john@example.com or 555-1234."}'
+jq -n --arg contents "Contact me at john@example.com or 555-1234.\nOr at 'other@example.com'." '{contents: $contents}' \
+  | curl -X POST "http://localhost:8000/anonymize" \
+         -H "Content-Type: application/json" \
+         -d @-
 ```
+
+> **Tip:** Using `jq` is recommended for non-trivial text, as it handles escaping for you. If you write the JSON by hand, be sure to properly escape quotes and newlines inside the `contents` string.
 
 ## Running with Docker Compose
 
