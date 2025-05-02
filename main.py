@@ -60,6 +60,7 @@ def main():
     group.add_argument('--text-path', help="Path to a directory containing .txt files to process")
     parser.add_argument('--lang',     default='en', help="Language code (ISO_639-1), default 'en'")
     parser.add_argument('--threshold',type=float, default=0.5, help="Minimum detection score, default 0.5")
+    parser.add_argument('--quiet', action='store_true', help="Suppress info messages; only output errors and anonymized text")
     args = parser.parse_args()
 
     anonymizers = {
@@ -92,17 +93,19 @@ def main():
         except Exception as e:
             print(f"[!] Could not read {fname}: {e}", file=sys.stderr)
             continue
-        print(f"\n[+] Processing file: {fname}")
-        print(f"[+] Loaded {len(text)} characters from {fname!r}")
+        if not args.quiet:
+            print(f"\n[+] Processing file: {fname}")
+            print(f"[+] Loaded {len(text)} characters from {fname!r}")
         detections = analyze_text(text, language=args.lang, score_threshold=args.threshold)
-        print(f"[+] Detected {len(detections)} PII entities in {fname}")
-        for ent in detections:
-            print(f"    - {ent['entity_type']} at [{ent['start']}–{ent['end']}] (score={ent['score']:.2f})")
+        if not args.quiet:
+            print(f"[+] Detected {len(detections)} PII entities in {fname}")
+            for ent in detections:
+                print(f"    - {ent['entity_type']} at [{ent['start']}–{ent['end']}] (score={ent['score']:.2f})")
         result = anonymize_text(text, detections, anonymizers)
         anonymized_text = result.get("text") or result.get("result") or ""
-        print("=== Anonymized Text ===")
+        print(f"=== Anonymized Text ({fname}) ===")
         print(anonymized_text)
-        print("========================")
+        print("================================")
 
 if __name__ == '__main__':
     try:

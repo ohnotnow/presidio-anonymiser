@@ -58,21 +58,21 @@ fi
 
 # Activate Python virtual environment
 if [[ -f ".venv/bin/activate" ]]; then
-  echo "[+] Activating virtual environment 'venv'..."
+  echo "[+] Activating virtual environment '.venv'..."
   # shellcheck disable=SC1091
   source .venv/bin/activate
 else
-  echo "[!] Virtual environment 'venv' not found."
+  echo "[!] Virtual environment '.venv' not found."
   exit 1
 fi
 
 # Run the anonymization script
 if [[ -d "$INPUT_FILE" ]]; then
   echo "[+] Running Python script on directory '$INPUT_FILE'..."
-  python main.py --text-path "$INPUT_FILE"
+  python main.py --text-path "$INPUT_FILE" --quiet
 elif [[ -f "$INPUT_FILE" ]]; then
   echo "[+] Running Python script on file '$INPUT_FILE'..."
-  python main.py --text-file "$INPUT_FILE"
+  python main.py --text-file "$INPUT_FILE" --quiet
 else
   echo "[!] Error: '$INPUT_FILE' is neither a file nor a directory."
   exit 1

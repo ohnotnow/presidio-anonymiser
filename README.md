@@ -96,6 +96,7 @@ uv run main.py --text-path <path-to-directory-of-files> [--lang LANGUAGE] [--thr
 - `<input_file>`: Path to a text file containing the text to process
 - `--lang`: ISO 639-1 language code (default: `en`)
 - `--threshold`: Minimum confidence score for detections (0.0–1.0, default: `0.5`)
+- `--quiet`: Suppress most 'info' style messages
 
 ### Direct invocation (without `uv`)
 ```bash
