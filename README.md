@@ -89,7 +89,7 @@ docker run -d --rm -p 5001:3000 mcr.microsoft.com/presidio-anonymizer:latest
 uv run main.py <input_file> [--lang LANGUAGE] [--threshold SCORE]
 ```
 
-- `<input_file>`: Path to a `.txt` file containing the text to process
+- `<input_file>`: Path to a text file containing the text to process
 - `--lang`: ISO 639-1 language code (default: `en`)
 - `--threshold`: Minimum confidence score for detections (0.0–1.0, default: `0.5`)
 
