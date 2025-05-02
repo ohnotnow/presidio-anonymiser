@@ -15,6 +15,7 @@ https://github.com/ohnotnow/presidio-anonymiser
 - [Example](#example)
 - [License](#license)
 - [API Service (FastAPI)](#api-service-fastapi)
+- [Running with Docker Compose](#running-with-docker-compose)
 
 ## Features
 - Detects PII entities (names, phone numbers, email addresses, etc.)
@@ -185,6 +186,26 @@ The service will be available at http://localhost:8000. You can access the inter
 curl -X POST "http://localhost:8000/anonymize" \
      -H "Content-Type: application/json" \
      -d '{"contents": "Contact me at john@example.com or 555-1234."}'
+```
+
+## Running with Docker Compose
+
+You can start the API and all required Presidio services using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+This will start three services:
+- `presidio-analyzer` (on port 5002)
+- `presidio-anonymizer` (on port 5001)
+- `presidio-api` (your FastAPI service, on port 8000)
+
+You can then access the API at [http://localhost:8000](http://localhost:8000) and the interactive docs at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+To stop and remove the containers:
+```bash
+docker-compose down
 ```
 
 ## License
