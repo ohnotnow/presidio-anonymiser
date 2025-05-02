@@ -8,7 +8,7 @@ set -euo pipefail
 
 # Usage check
 if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 <input-text-file>"
+  echo "Usage: $0 <input-text-file-or-path-to-directory-of-files>"
   exit 1
 fi
 INPUT_FILE="$1"
@@ -67,8 +67,16 @@ else
 fi
 
 # Run the anonymization script
-echo "[+] Running Python script on '$INPUT_FILE'..."
-python main.py "$INPUT_FILE"
+if [[ -d "$INPUT_FILE" ]]; then
+  echo "[+] Running Python script on directory '$INPUT_FILE'..."
+  python main.py --text-path "$INPUT_FILE"
+elif [[ -f "$INPUT_FILE" ]]; then
+  echo "[+] Running Python script on file '$INPUT_FILE'..."
+  python main.py --text-file "$INPUT_FILE"
+else
+  echo "[!] Error: '$INPUT_FILE' is neither a file nor a directory."
+  exit 1
+fi
 
 # Deactivate venv
 deactivate
@@ -83,4 +91,3 @@ else
 fi
 
 echo "[+] Done."
-

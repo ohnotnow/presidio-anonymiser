@@ -66,8 +66,10 @@ To do a quick run you can use the `run.sh` script which takes care of the docker
 
 ```bash
 ./run.sh /path/to/a/text/file.md
+# or
+./run.sh /path/to/a/directory_of_files/
 ```
-That will pull the docker images (if you don't have them) and run the containers (if they're not already running) and anonymise the file.  The results will be printed to stdout.
+That will pull the docker images (if you don't have them) and run the containers (if they're not already running) and anonymise the file(s).  The results will be printed to stdout.
 
 ## Running the tool (Hard mode)
 ### Running Presidio Services
@@ -86,7 +88,9 @@ docker run -d --rm -p 5001:3000 mcr.microsoft.com/presidio-anonymizer:latest
 
 ### Usage
 ```bash
-uv run main.py <input_file> [--lang LANGUAGE] [--threshold SCORE]
+uv run main.py --text-file <input_file> [--lang LANGUAGE] [--threshold SCORE]
+# or
+uv run main.py --text-path <path-to-directory-of-files> [--lang LANGUAGE] [--threshold SCORE]
 ```
 
 - `<input_file>`: Path to a text file containing the text to process
@@ -95,7 +99,7 @@ uv run main.py <input_file> [--lang LANGUAGE] [--threshold SCORE]
 
 ### Direct invocation (without `uv`)
 ```bash
-python3 main.py input.txt --lang en --threshold 0.7
+python3 main.py --text-file input.txt --lang en --threshold 0.7
 ```
 
 ## Options & Flags
@@ -115,7 +119,7 @@ anonymizers = {
 
 ## Example
 ```bash
-uv run main.py sample_input.txt --lang en --threshold 0.6
+uv run main.py --text-file sample_input.txt --lang en --threshold 0.6
 ```
 Output:
 ```
