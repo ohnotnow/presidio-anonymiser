@@ -1,7 +1,8 @@
 import requests
+import os
 
-ANALYZER_URL   = 'http://localhost:5002/analyze'
-ANONYMIZER_URL = 'http://localhost:5001/anonymize'
+ANALYZER_URL   = os.getenv('ANALYZER_URL', 'http://localhost:5002/analyze')  # noqa: E501
+ANONYMIZER_URL = os.getenv('ANONYMIZER_URL', 'http://localhost:5001/anonymize')  # noqa: E501
 
 default_anonymizers = {
     "DEFAULT":      { "type": "replace", "new_value": "ANONYMIZED" },
@@ -19,7 +20,7 @@ def analyze_text(text: str, language: str = 'en', score_threshold: float = 0.5):
     resp.raise_for_status()
     return resp.json()
 
-def anonymize_text(text: str, analyzer_results: list, anonymizers: dict = None):
+def anonymize_text(text: str, analyzer_results: list, anonymizers: dict|None = None):
     if anonymizers is None:
         anonymizers = {"DEFAULT": {"type": "replace", "new_value": "<ENTITY>"}}
     payload = {

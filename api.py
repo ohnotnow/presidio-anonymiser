@@ -5,8 +5,8 @@ import requests
 import os
 from presidio_service import analyze_text, anonymize_text, default_anonymizers
 
-ANALYZER_URL   = 'http://localhost:5002/analyze'
-ANONYMIZER_URL = 'http://localhost:5001/anonymize'
+ANALYZER_URL   = os.getenv('ANALYZER_URL', 'http://localhost:5002/analyze')
+ANONYMIZER_URL = os.getenv('ANONYMIZER_URL', 'http://localhost:5001/anonymize')
 
 app = FastAPI(title="Presidio Anonymizer API")
 

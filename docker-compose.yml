@@ -1,27 +1,15 @@
-version: '3.8'
-
 services:
   presidio-analyzer:
     image: mcr.microsoft.com/presidio-analyzer:latest
     container_name: presidio-analyzer
     ports:
-      - "5002:5002"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5002:3000"
 
   presidio-anonymizer:
     image: mcr.microsoft.com/presidio-anonymizer:latest
     container_name: presidio-anonymizer
     ports:
       - "5001:3000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   presidio-api:
     build:
@@ -31,10 +19,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      presidio-analyzer:
-        condition: service_healthy
-      presidio-anonymizer:
-        condition: service_healthy
+      - presidio-analyzer
+      - presidio-anonymizer
     environment:
       - PYTHONUNBUFFERED=1
+      - ANALYZER_URL=http://presidio-analyzer:3000/analyze
+      - ANONYMIZER_URL=http://presidio-anonymizer:3000/anonymize
     command: uvicorn api:app --host 0.0.0.0 --port 8000

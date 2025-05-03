@@ -3,7 +3,7 @@
 main.py
 
 Usage:
-    python main.py input.txt
+    python main.py --text-fileinput.txt
 
 Reads text from input file, analyzes PII with Presidio Analyzer,
 then anonymizes it with Presidio Anonymizer and prints the result.
